@@ -1,0 +1,42 @@
+# Copy this file to .env and fill in your credentials
+
+# Zerodha API Credentials
+# Get these from https://kite.trade/apps/
+ZERODHA_API_KEY=your_api_key_here
+ZERODHA_API_SECRET=your_api_secret_here
+ZERODHA_USER_ID=TR0708
+ZERODHA_PASSWORD=Nivin08123#
+ZERODHA_TOTP_SECRET=
+
+# Trading Parameters
+SLOT_SYMBOL=NSE:SBIN
+SLOT_QUANTITY=1
+SLOT_ORDER_TYPE=MARKET
+SLOT_PRODUCT=MIS
+
+# Market Analysis Parameters
+MIN_ANALYSIS_SCORE=20
+SYMBOLS_TO_ANALYZE=NSE:SBIN,NSE:RELIANCE,NSE:TCS
+
+# Twilio Credentials (for SMS and WhatsApp)
+# Get from https://www.twilio.com/
+TWILIO_ACCOUNT_SID=your_twilio_account_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+TWILIO_PHONE_NUMBER=+1234567890
+USER_PHONE_NUMBER=+1234567890
+WHATSAPP_NUMBER=+1234567890
+
+# Email Settings
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASSWORD=your_app_password
+NOTIFICATION_EMAIL=your_notification_email@gmail.com
+
+# Scheduling
+DAILY_BUY_TIME=09:15
+TIMEZONE=Asia/Kolkata
+
+# Logging
+LOG_LEVEL=INFO
+LOG_FILE=trading_agent.log

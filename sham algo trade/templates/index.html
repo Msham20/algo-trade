@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated Trading Bot - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-robot"></i> Automated Trading Bot</h1>
+                <div class="header-actions">
+                    <button id="settingsBtn" class="btn btn-secondary">
+                        <i class="fas fa-key"></i> Account Login
+                    </button>
+                    <div class="status-indicator" id="statusIndicator">
+                        <span class="status-dot" id="statusDot"></span>
+                        <span id="statusText">Checking...</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Control Panel -->
+            <section class="card control-panel">
+                <h2><i class="fas fa-sliders-h"></i> Control Panel</h2>
+                <div class="button-group">
+                    <button id="connectBtn" class="btn btn-primary">
+                        <i class="fas fa-plug"></i> Connect to Zerodha
+                    </button>
+                    <button id="startBtn" class="btn btn-success">
+                        <i class="fas fa-play"></i> Start Bot
+                    </button>
+                    <button id="stopBtn" class="btn btn-danger">
+                        <i class="fas fa-stop"></i> Stop Bot
+                    </button>
+                    <button id="executeTradeBtn" class="btn btn-warning">
+                        <i class="fas fa-chart-line"></i> Execute Trade Now
+                    </button>
+                </div>
+            </section>
+
+            <!-- Status Cards -->
+            <div class="status-grid">
+                <div class="status-card">
+                    <div class="status-icon bot-status">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="status-info">
+                        <h3>Bot Status</h3>
+                        <p id="botStatusText">Not Running</p>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-icon connection-status">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <div class="status-info">
+                        <h3>Connection</h3>
+                        <p id="connectionStatusText">Disconnected</p>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-icon trade-status">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <div class="status-info">
+                        <h3>Last Trade</h3>
+                        <p id="lastTradeText">No trades yet</p>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-icon analysis-status">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="status-info">
+                        <h3>Last Analysis</h3>
+                        <p id="lastAnalysisText">No analysis yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Analysis Section -->
+            <section class="card analysis-section">
+                <h2><i class="fas fa-chart-line"></i> Market Analysis</h2>
+                <div class="analysis-controls">
+                    <input type="text" id="symbolInput" placeholder="Enter symbol (e.g., NSE:SBIN)" value="NSE:SBIN"
+                        class="input-field">
+                    <button id="analyzeBtn" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Analyze
+                    </button>
+                </div>
+                <div id="analysisResult" class="analysis-result"></div>
+            </section>
+
+            <!-- Positions and Margins -->
+            <div class="grid-2">
+                <section class="card">
+                    <h2><i class="fas fa-briefcase"></i> Positions</h2>
+                    <button id="refreshPositionsBtn" class="btn btn-sm btn-secondary">
+                        <i class="fas fa-sync"></i> Refresh
+                    </button>
+                    <div id="positionsList" class="data-list">
+                        <p class="empty-state">Click refresh to load positions</p>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h2><i class="fas fa-wallet"></i> Margins</h2>
+                    <button id="refreshMarginsBtn" class="btn btn-sm btn-secondary">
+                        <i class="fas fa-sync"></i> Refresh
+                    </button>
+                    <div id="marginsInfo" class="data-list">
+                        <p class="empty-state">Click refresh to load margins</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Logs Section -->
+            <section class="card logs-section">
+                <h2><i class="fas fa-file-alt"></i> Recent Logs</h2>
+                <button id="refreshLogsBtn" class="btn btn-sm btn-secondary">
+                    <i class="fas fa-sync"></i> Refresh Logs
+                </button>
+                <div id="logsContent" class="logs-content">
+                    <p class="empty-state">Loading logs...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Processing...</p>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-lock"></i> Login to Zerodha Account</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="settingsForm" class="settings-form">
+                <div class="form-group">
+                    <label for="apiKey">API Key</label>
+                    <input type="text" id="apiKey" name="apiKey" placeholder="Enter API Key" required>
+                </div>
+                <div class="form-group">
+                    <label for="apiSecret">API Secret</label>
+                    <input type="password" id="apiSecret" name="apiSecret" placeholder="Enter API Secret" required>
+                </div>
+                <div class="form-group">
+                    <label for="userId">User ID</label>
+                    <input type="text" id="userId" name="userId" placeholder="Enter User ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter Zerodha Password" required>
+                </div>
+                <div class="form-group">
+                    <label for="totpSecret">TOTP Secret (Optional)</label>
+                    <input type="text" id="totpSecret" name="totpSecret" placeholder="Enter TOTP Secret for 2FA">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Connect Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+
+</html>
